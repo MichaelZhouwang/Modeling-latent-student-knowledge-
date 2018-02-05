@@ -72,10 +72,10 @@ def rand_search(y,rate, combs, dmp, reg):
         else:
             d_t = {}
             for i in range(0,combs):
-                gg = np.random.unfiorm(low=G_D, high=G_U, size=1)
-                ss = np.random.unfiorm(low=S_D, high=S_U, size=1)
-                tt = np.random.unfiorm(low=T_D, high=T_U, size=1)
-                itit = np.random.unfiorm(low=IT_D, high=IT_U, size=1)
+                gg = np.random.uniform(low=G_D, high=G_U, size=1)
+                ss = np.random.uniform(low=S_D, high=S_U, size=1)
+                tt = np.random.uniform(low=T_D, high=T_U, size=1)
+                itit = np.random.uniform(low=IT_D, high=IT_U, size=1)
                 pi_1, A, B = hm.get_matrices(itit,gg,ss,tt)
                 d_t.update({(gg,ss,tt,itit):np.log(hm.likelihood_obs(y, pi_1, A, B))})
             maxm = max(d_t.keys(), key=(lambda k: d_t[k]))
@@ -94,10 +94,10 @@ def rand_search(y,rate, combs, dmp, reg):
             Md.update(local_rand_search(GG_U,GG_D,SS_U,SS_D, TT_U, TT_D, ITIT_U, ITIT_D,cnt))
             
     for i in range(0, combs):
-        g = np.random.unfiorm(low=0.0, high=0.3, size=1)
-        s = np.random.unfiorm(low=0.0, high=0.1, size=1)
-        t = np.random.unfiorm(low=0.0, high=1, size=1)
-        it = np.random.unfiorm(low=0.0, high=1, size=1)
+        g = np.random.uniform(low=0.0, high=0.3, size=1)
+        s = np.random.uniform(low=0.0, high=0.1, size=1)
+        t = np.random.uniform(low=0.0, high=1, size=1)
+        it = np.random.uniform(low=0.0, high=1, size=1)
         pi_1, A, B = hm.get_matrices(it,g,s,t)
         d.update({(g,s,t,it):np.log(hm.likelihood_obs(y, pi_1, A, B))})
         
