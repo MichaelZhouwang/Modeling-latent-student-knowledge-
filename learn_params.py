@@ -18,46 +18,45 @@ def baum_welch(y, threshold):
         # pi
         sm = hm.smoothing(y, theta_0[0], theta_0[1], theta_0[2])
         pL0 = sm[1,1] #confirm if sm[0,1] or sm[1,1]
-        pi = np.array([1-pL0, pL0])
-        T[0] = pi
+        pi_1 = np.array([1-pL0, pL0])
+        T.append(pi_1)
         # pT 
         ds = hm.two_smoothing(y, theta_0[0], theta_0[1], theta_0[2])
         pT = np.sum(ds[:,1])/(np.sum(ds[:,1] + np.sum(ds[:,0])))
         A = np.array([[1-pT,pT], [0,1]])
-        T[1] = A
+        T.append(A)
         # pG, pS
         sm0 = sm[1:(sm.shape[0] +1), 0]
         sm1 = sm[1:(sm.shape[0] +1), 1]
         pG = (sm0.dot(y))/(np.sum(sm0))
         pS = (sm1.dot(1-y))/(np.sum(sm1))
         B = np.array([[1-pG, pG], [pS, 1-pS]])
-        T[2] = B
+        T.append(B)
         return(T)
     
         
         
     theta = update(theta_0)
-    pi = theta[0]
+    pi_1 = theta[0]
     A = theta[1]
     B = theta[2]
     
-    while(np.absolute(np.log(hm.likelihood_obs(y, pi_0, A_0, B_0)) - np.log(hm.likelihood_obs(y, pi, A, B))) > threshold):
+    while(np.absolute(np.log(hm.likelihood_obs(y, pi_0, A_0, B_0)) - np.log(hm.likelihood_obs(y, pi_1, A, B))) > threshold):
         theta_0 = theta
-        pi_0 = pi
+        pi_0 = pi_1
         A_0 = A
         B_0 = B
         theta = update(theta_0)
-        pi = theta[0]
+        pi_1 = theta[0]
         A = theta[1]
         B = theta[2]
     
     return(theta)
             
 
-#Inefficient grid search 
 
 
-#Randomize the search
+#Randomized search
 def rand_search(y,rate, combs, dmp, reg):
     
     d ={}
@@ -77,8 +76,8 @@ def rand_search(y,rate, combs, dmp, reg):
                 ss = np.random.unfiorm(low=S_D, high=S_U, size=1)
                 tt = np.random.unfiorm(low=T_D, high=T_U, size=1)
                 itit = np.random.unfiorm(low=IT_D, high=IT_U, size=1)
-                pi, A, B = hm.get_matrices(itit,gg,ss,tt)
-                d_t.update({(gg,ss,tt,itit):np.log(hm.likelihood_obs(y, pi, A, B))})
+                pi_1, A, B = hm.get_matrices(itit,gg,ss,tt)
+                d_t.update({(gg,ss,tt,itit):np.log(hm.likelihood_obs(y, pi_1, A, B))})
             maxm = max(d_t.keys(), key=(lambda k: d_t[k]))
             el_max= d_t[maxm]
             GG, SS, TT, ITIT = maxm
@@ -99,8 +98,8 @@ def rand_search(y,rate, combs, dmp, reg):
         s = np.random.unfiorm(low=0.0, high=0.1, size=1)
         t = np.random.unfiorm(low=0.0, high=1, size=1)
         it = np.random.unfiorm(low=0.0, high=1, size=1)
-        pi, A, B = hm.get_matrices(it,g,s,t)
-        d.update({(g,s,t,it):np.log(hm.likelihood_obs(y, pi, A, B))})
+        pi_1, A, B = hm.get_matrices(it,g,s,t)
+        d.update({(g,s,t,it):np.log(hm.likelihood_obs(y, pi_1, A, B))})
         
     for j in range(0, reg):
         maxm = max(d.keys(), key=(lambda k: d[k]))
